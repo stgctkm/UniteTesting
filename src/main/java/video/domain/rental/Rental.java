@@ -4,6 +4,9 @@ import video.domain.Movie;
 import video.domain.PriceType;
 
 public class Rental {
+    private final RegularPrice regularPrice = new RegularPrice();
+    private final NewReleasePrice newReleasePrice = new NewReleasePrice();
+    private final ChildrenPrice childrenPrice = new ChildrenPrice();
     private Movie movie;
     private int daysRented;
 
@@ -22,15 +25,14 @@ public class Rental {
 
     public int amount() {
         // 金額を計算
+        int daysRented = getDaysRented();
         switch (getMovie().getPriceType()) {
             case REGULAR:
-                if (getDaysRented() <= 2) return 200;
-                return 200 + (getDaysRented() - 2) * 150;
+                return regularPrice.price(daysRented);
             case NEW_RELEASE:
-                return getDaysRented() * 300;
+                return newReleasePrice.price(daysRented);
             case CHILDREN:
-                if (getDaysRented() <= 3) return 150;
-                return 150 + (getDaysRented() - 3) * 150;
+                return childrenPrice.price(daysRented);
             default:
                 throw new RuntimeException("ビデオの区分が誤っています");
         }
